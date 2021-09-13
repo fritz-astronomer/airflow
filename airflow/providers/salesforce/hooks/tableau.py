@@ -17,7 +17,10 @@
 
 import warnings
 
-from airflow.providers.tableau.hooks.tableau import TableauHook, TableauJobFinishCode  # noqa
+try:
+    from airflow.providers.tableau.hooks.tableau import TableauHook, TableauJobFinishCode  # noqa
+except ImportError:
+    pass
 
 warnings.warn(
     "This module is deprecated. Please use `airflow.providers.tableau.hooks.tableau`.",

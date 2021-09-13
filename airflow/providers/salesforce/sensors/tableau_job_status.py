@@ -17,10 +17,13 @@
 
 import warnings
 
-from airflow.providers.tableau.sensors.tableau_job_status import (  # noqa
-    TableauJobFailedException,
-    TableauJobStatusSensor,
-)
+try:
+    from airflow.providers.tableau.sensors.tableau_job_status import (  # noqa
+        TableauJobFailedException,
+        TableauJobStatusSensor,
+    )
+except ImportError:
+    pass
 
 warnings.warn(
     "This module is deprecated. Please use `airflow.providers.tableau.sensors.tableau_job_status`.",

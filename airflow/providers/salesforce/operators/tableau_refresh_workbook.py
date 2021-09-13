@@ -17,9 +17,12 @@
 
 import warnings
 
-from airflow.providers.tableau.operators.tableau_refresh_workbook import (  # noqa
-    TableauRefreshWorkbookOperator,
-)
+try:
+    from airflow.providers.tableau.operators.tableau_refresh_workbook import (  # noqa
+        TableauRefreshWorkbookOperator,
+    )
+except ImportError:
+    pass
 
 warnings.warn(
     "This module is deprecated. Please use `airflow.providers.tableau.operators.tableau_refresh_workbook`.",
