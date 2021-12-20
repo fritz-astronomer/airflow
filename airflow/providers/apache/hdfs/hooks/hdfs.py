@@ -74,13 +74,14 @@ class HDFSHook(BaseHook):
         use_sasl = conf.get('core', 'security') == 'kerberos'
 
         try:
-            connections = self.get_connections(self.hdfs_conn_id)
+            connection = self.get_connection(self.hdfs_conn_id)
 
             if not effective_user:
-                effective_user = connections[0].login
+                effective_user = connection.login
             if not autoconfig:
-                autoconfig = connections[0].extra_dejson.get('autoconfig', False)
-            hdfs_namenode_principal = connections[0].extra_dejson.get('hdfs_namenode_principal')
+                autoconfig = connection.extra_dejson.get('autoconfig', False)
+            hdfs_namenode_principal = connection.extra_dejson.get('hdfs_namenode_principal')
+
         except AirflowException:
             if not autoconfig:
                 raise
@@ -88,16 +89,16 @@ class HDFSHook(BaseHook):
         if autoconfig:
             # will read config info from $HADOOP_HOME conf files
             client = AutoConfigClient(effective_user=effective_user, use_sasl=use_sasl)
-        elif len(connections) == 1:
+        elif not ',' in connection.host:
             client = Client(
-                connections[0].host,
-                connections[0].port,
+                connection.host,
+                connection.port,
                 effective_user=effective_user,
                 use_sasl=use_sasl,
                 hdfs_namenode_principal=hdfs_namenode_principal,
             )
-        elif len(connections) > 1:
-            name_node = [Namenode(conn.host, conn.port) for conn in connections]
+        elif ',' in connection.host:
+            name_nodes = [Namenode(conn.host, conn.port) for conn in connection.host]
             client = HAClient(
                 name_node,
                 effective_user=effective_user,
