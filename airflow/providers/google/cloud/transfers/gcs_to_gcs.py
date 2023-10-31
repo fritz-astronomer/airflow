@@ -19,7 +19,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING, Iterable, Sequence
 
 from airflow.exceptions import AirflowException, AirflowProviderDeprecationWarning
 from airflow.models import BaseOperator
@@ -200,14 +200,18 @@ class GCSToGCSOperator(BaseOperator):
         super().__init__(**kwargs)
 
         self.source_bucket = source_bucket
-        if source_object and WILDCARD in source_object:
+        if source_object and isinstance(source_object, str) and WILDCARD in source_object:
             warnings.warn(
                 "Usage of wildcard (*) in 'source_object' is deprecated, utilize 'match_glob' instead",
                 AirflowProviderDeprecationWarning,
                 stacklevel=2,
             )
         self.source_object = source_object
-        if source_objects and any(WILDCARD in obj for obj in source_objects):
+        if (
+            source_objects
+            and isinstance(source_objects, Iterable)
+            and any(WILDCARD in obj for obj in source_objects)
+        ):
             warnings.warn(
                 "Usage of wildcard (*) in 'source_objects' is deprecated, utilize 'match_glob' instead",
                 AirflowProviderDeprecationWarning,
