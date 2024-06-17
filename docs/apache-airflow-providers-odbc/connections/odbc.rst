@@ -22,7 +22,7 @@ ODBC Connection
 
 The ``odbc`` connection type provides connection to ODBC data sources including MS SQL Server.
 
-Enable with ``pip install apache-airflow[odbc]``.
+Enable with ``pip install apache-airflow-providers-odbc``.
 
 
 System prerequisites
